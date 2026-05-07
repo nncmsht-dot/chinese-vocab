@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>中文 단어장</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1208;--paper:#f5f0e8;--aged:#e8dfc8;--red:#c0392b;--gold:#b8860b;--fade:#8a7a60;--line:#d4c9a8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;background-image:repeating-linear-gradient(0deg,transparent,transparent 31px,var(--line) 31px,var(--line) 32px);background-size:100% 32px}
+header{background:var(--ink);color:var(--paper);padding:18px 20px 14px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 3px 12px rgba(0,0,0,0.3)}
+header h1{font-family:'Noto Serif TC',serif;font-size:22px;letter-spacing:4px;color:#e8c97a}
+header p{font-size:11px;color:#9a8a72;margin-top:2px}
+.inp{margin:20px 16px 0;background:white;border-radius:4px;border:1px solid var(--line);padding:16px;box-shadow:2px 3px 0 var(--aged)}
+.inp label{font-size:11px;font-weight:600;color:var(--fade);letter-spacing:2px;display:block;margin-bottom:8px}
+.row{display:flex;gap:8px}
+.row input{flex:1;border:1.5px solid var(--line);border-radius:3px;padding:10px 12px;font-size:13px;font-family:inherit;background:var(--paper);color:var(--ink);outline:none}
+.row input:focus{border-color:var(--gold)}
+.btn{background:var(--ink);color:#e8c97a;border:none;border-radius:3px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:disabled{background:#aaa}
+.loading{display:none;text-align:center;padding:20px;color:var(--fade);font-size:13px}
+.loading.show{display:block}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.dots span{display:inline-block;animation:blink 1.2s infinite;font-size:20px}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+.day{margin:20px 16px 0}
+.dh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dl{font-family:'Noto Serif TC',serif;font-size:13px;color:var(--red);font-weight:700;letter-spacing:1px;white-space:nowrap}
+.dline{flex:1;height:1px;background:var(--red);opacity:.3}
+.dc{font-size:11px;color:var(--fade)}
+@keyframes si{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:white;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:2px;padding:12px 14px;margin-bottom:8px;box-shadow:1px 2px 0 var(--aged);animation:si .3s ease;position:relative}
+.zh{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:2px}
+.py{font-size:12px;color:var(--red);margin-top:2px}
+.ko{font-size:14px;color:var(--ink);margin-top:6px;font-weight:600}
+.ex{font-size:12px;color:var(--fade);margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);line-height:1.6}
+.src{font-size:10px;color:#ccc;margin-top:4px}
+.del{position:absolute;top:10px;right:10px;background:none;border:none;color:#ccc;font-size:16px;cursor:pointer}
+.bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink);padding:12px 16px;display:flex;gap:8px;box-shadow:0 -3px 12px rgba(0,0,0,.2)}
+.pill{background:rgba(255,255,255,.1);border-radius:20px;padding:6px 14px;font-size:16px;color:#e8c97a;font-weight:600;flex:1;text-align:center}
+.pill span{display:block;font-size:9px;color:#9a8a72;margin-top:1px;font-weight:400}
+.ebtn{background:var(--red);color:white;border:none;border-radius:20px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer}
+.spacer{height:80px}
+.empty{text-align:center;padding:40px 20px;color:var(--fade)}
+.empty .big{font-family:'Noto Serif TC',serif;font-size:48px;opacity:.3}
+.empty p{font-size:13px;margin-top:12px;line-height:1.8}
+.err{background:#fff0ee;border:1px solid #f5c6c0;border-radius:3px;padding:10px 14px;font-size:12px;color:var(--red);margin-top:10px;display:none}
+.err.show{display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1>中文 단어장</h1>
+  <p>매일 유튜브로 배우는 중국어</p>
+</header>
+<div class="inp">
+  <label>유튜브 링크</label>
+  <div class="row">
+    <input type="url" id="urlInput" placeholder="https://youtu.be/..."/>
+    <button class="btn" id="analyzeBtn" onclick="analyze()">분석</button>
+  </div>
+  <div class="err" id="err"></div>
+</div>
+<div class="loading" id="loading">
+  <div class="dots"><span>●</span><span>●</span><span>●</span></div>
+  <p style="margin-top:10px;font-size:12px">AI가 단어를 추출하는 중...</p>
+</div>
+<div id="container"></div>
+<div class="spacer"></div>
+<div class="bar">
+  <div class="pill" id="total">0<span>총 단어</span></div>
+  <div class="pill" id="today">0<span>오늘</span></div>
+  <button class="ebtn" onclick="exportPDF()">PDF 저장</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const KEY='chinese_vocab_v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch{return{}}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function todayKey(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function vid(url){const m=url.match(/(?:youtu\.be\/|v=|\/v\/|embed\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null}
+async function analyze(){
+  const url=document.getElementById('urlInput').value.trim();
+  if(!url)return;
+  const btn=document.getElementById('analyzeBtn');
+  const ld=document.getElementById('loading');
+  const er=document.getElementById('err');
+  btn.disabled=true;ld.classList.add('show');er.classList.remove('show');
+  try{
+    const id=vid(url);
+    const prompt=`다음 대만 유튜브 영상에서 중국어(번체자) 학습에 유용한 단어와 표현을 추출해주세요.\n영상 URL: ${url}\n${id?`영상 ID: ${id}`:''}\n\n이 채널은 대만 일상 중국어를 다루는 채널입니다.\n\nJSON 배열로만 응답하세요 (마크다운 코드블록 없이):\n[{"chinese":"繁體字","pinyin":"pīn yīn","korean":"한국어 뜻","example_zh":"예문","example_ko":"예문 번역"}]\n\n규칙: 일상 단어/표현 8~12개, 번체자, 대만식 표현 우선, JSON만 반환`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content.map(b=>b.text||'').join('');
+    const words=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(!Array.isArray(words)||!words.length)throw new Error('단어 추출 실패');
+    const all=load();const t=todayKey();
+    if(!all[t])all[t]=[];
+    words.forEach(w=>all[t].push({...w,source:url,id:Date.now()+Math.random()}));
+    save(all);document.getElementById('urlInput').value='';render();
+  }catch(e){er.textContent='오류: '+e.message;er.classList.add('show');}
+  finally{btn.disabled=false;ld.classList.remove('show');}
+}
+function delWord(date,id){
+  const all=load();
+  if(!all[date])return;
+  all[date]=all[date].filter(w=>String(w.id)!==String(id));
+  if(!all[date].length)delete all[date];
+  save(all);render();
+}
+function render(){
+  const all=load();
+  const dates=Object.keys(all).sort((a,b)=>b.localeCompare(a));
+  const c=document.getElementById('container');
+  const t=todayKey();
+  if(!dates.length){
+    c.innerHTML='<div class="empty"><div class="big">學</div><p>유튜브 링크를 붙여넣고<br>분석 버튼을 누르면<br>단어가 자동으로 저장돼요</p></div>';
+    document.getElementById('total').innerHTML='0<span>총 단어</span>';
+    document.getElementById('today').innerHTML='0<span>오늘</span>';
+    return;
+  }
+  let html='';let tot=0;let tod=0;
+  dates.forEach(date=>{
+    const ws=all[date];tot+=ws.length;if(date===t)tod=ws.length;
+    html+=`<div class="day"><div class="dh"><span class="dl">${date}</span><div class="dline"></div><span class="dc">${ws.length}개</span></div>`;
+    ws.forEach(w=>{
+      const s=vid(w.source)?`youtu.be/${vid(w.source)}`:( w.source||'').substring(0,40);
+      html+=`<div class="card"><button class="del" onclick="delWord('${date}','${w.id}')">✕</button><div class="zh">${w.chinese}</div><div class="py">${w.pinyin}</div><div class="ko">${w.korean}</div>${w.example_zh?`<div class="ex"><span style="font-family:serif">${w.example_zh}</span><br>${w.example_ko}</div>`:''}<div class="src">${s}</div></div>`;
+    });
+    html+='</div>';
+  });
+  c.innerHTML=html;
+  document.getElementById('total').innerHTML=`${tot}<span>총 단어</span>`;
+  document.getElementById('today').innerHTML=`${tod}<span>오늘</span>`;
+}
+async function exportPDF(){
+  const all=load();const dates=Object.keys(all).sort((a,b)=>b.localeCompare(a));
+  if(!dates.length){alert('저장된 단어가 없어요');return;}
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  let y=20;const pH=280;const mg=15;
+  doc.setFillColor(26,18,8);doc.rect(0,0,210,18,'F');
+  doc.setTextColor(232,201,122);doc.setFontSize(14);doc.text('Chinese Vocabulary Notebook',105,11,{align:'center'});
+  doc.setTextColor(154,138,114);doc.setFontSize(8);doc.text(`Generated: ${new Date().toLocaleDateString('ko-KR')}`,105,16,{align:'center'});
+  y=28;
+  dates.forEach(date=>{
+    const ws=all[date];if(y>pH-20){doc.addPage();y=15;}
+    doc.setFillColor(245,240,232);doc.rect(mg,y-4,180,8,'F');
+    doc.setDrawColor(192,57,43);doc.line(mg,y+4,195,y+4);
+    doc.setTextColor(192,57,43);doc.setFontSize(10);doc.text(`${date}  (${ws.length}개)`,mg+2,y+1);y+=12;
+    ws.forEach(w=>{
+      if(y>pH-30){doc.addPage();y=15;}
+      const ch=w.example_zh?24:16;
+      doc.setDrawColor(212,201,168);doc.setFillColor(255,255,255);doc.roundedRect(mg,y,180,ch,1,1,'FD');
+      doc.setDrawColor(184,134,11);doc.line(mg,y,mg,y+ch);doc.line(mg+.5,y,mg+.5,y+ch);
+      doc.setTextColor(26,18,8);doc.setFontSize(13);doc.text(w.chinese||'',mg+5,y+7);
+      doc.setTextColor(192,57,43);doc.setFontSize(7.5);doc.text(w.pinyin||'',mg+5,y+12);
+      doc.setTextColor(26,18,8);doc.setFontSize(9);const ko=w.korean||'';doc.text(ko.length>35?ko.substring(0,35)+'...':ko,mg+60,y+7);
+      if(w.example_zh){doc.setDrawColor(212,201,168);doc.line(mg+3,y+15,mg+177,y+15);doc.setTextColor(138,122,96);doc.setFontSize(7);const ex=w.example_zh+' / '+w.example_ko;doc.text(ex.length>70?ex.substring(0,70)+'...':ex,mg+5,y+21);}
+      y+=ch+4;
+    });y+=6;
+  });
+  const pc=doc.getNumberOfPages();for(let i=1;i<=pc;i++){doc.setPage(i);doc.setTextColor(200,200,200);doc.setFontSize(8);doc.text(`${i}/${pc}`,195,290,{align:'right'});}
+  doc.save(`중문단어장_${new Date().toLocaleDateString('ko-KR').replace(/\. /g,'-').replace('.','-')}.pdf`);
+}
+document.getElementById('urlInput').addEventListener('keydown',e=>{if(e.key==='Enter')analyze();});
+render();
+</script>
+</body>
+</html>
