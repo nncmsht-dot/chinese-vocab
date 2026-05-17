@@ -12,25 +12,35 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--paper);color:var(--i
 header{background:var(--ink);color:var(--paper);padding:18px 20px 14px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 3px 12px rgba(0,0,0,0.3)}
 header h1{font-family:'Noto Serif TC',serif;font-size:22px;letter-spacing:4px;color:#e8c97a}
 header p{font-size:11px;color:#9a8a72;margin-top:2px}
-.inp{margin:20px 16px 0;background:white;border-radius:4px;border:1px solid var(--line);padding:16px;box-shadow:2px 3px 0 var(--aged)}
-.inp label{font-size:11px;font-weight:600;color:var(--fade);letter-spacing:2px;display:block;margin-bottom:8px}
+.box{margin:20px 16px 0;background:white;border-radius:4px;border:1px solid var(--line);padding:16px;box-shadow:2px 3px 0 var(--aged)}
+.box label{font-size:11px;font-weight:600;color:var(--fade);letter-spacing:2px;display:block;margin-bottom:8px}
 .row{display:flex;gap:8px}
 .row input{flex:1;border:1.5px solid var(--line);border-radius:3px;padding:10px 12px;font-size:13px;font-family:inherit;background:var(--paper);color:var(--ink);outline:none}
 .row input:focus{border-color:var(--gold)}
 .btn{background:var(--ink);color:#e8c97a;border:none;border-radius:3px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
-.btn:disabled{background:#aaa}
-.loading{display:none;text-align:center;padding:20px;color:var(--fade);font-size:13px}
-.loading.show{display:block}
-@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-.dots span{display:inline-block;animation:blink 1.2s infinite;font-size:20px}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
+.btn:active{opacity:.8}
+.btn.outline{background:white;color:var(--ink);border:1.5px solid var(--line)}
+.step-hint{font-size:11px;color:var(--fade);margin-top:10px;line-height:1.8}
+.step-hint b{color:var(--red)}
+.btn-row{display:flex;gap:8px;margin-top:10px}
+.btn-row .btn{flex:1;text-align:center}
+.claude-btn{background:#d97706;color:white;border:none;border-radius:3px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;flex:1;text-align:center}
+.claude-btn:active{opacity:.8}
+.paste-area{width:100%;min-height:80px;border:1.5px dashed var(--line);border-radius:3px;padding:10px 12px;font-size:12px;font-family:monospace;background:var(--paper);color:var(--ink);outline:none;resize:vertical;margin-top:10px}
+.paste-area:focus{border-color:var(--gold)}
+.paste-area::placeholder{color:#bbb;font-family:'Noto Sans KR',sans-serif}
+.ok{background:#f0fff4;border:1px solid #a3d9a5;border-radius:3px;padding:8px 12px;font-size:12px;color:#276749;margin-top:8px;display:none}
+.ok.show{display:block}
+.err{background:#fff0ee;border:1px solid #f5c6c0;border-radius:3px;padding:8px 12px;font-size:12px;color:var(--red);margin-top:8px;display:none}
+.err.show{display:block}
+.step2{display:none}
+.step2.show{display:block}
+@keyframes si{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .day{margin:20px 16px 0}
 .dh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .dl{font-family:'Noto Serif TC',serif;font-size:13px;color:var(--red);font-weight:700;letter-spacing:1px;white-space:nowrap}
 .dline{flex:1;height:1px;background:var(--red);opacity:.3}
 .dc{font-size:11px;color:var(--fade)}
-@keyframes si{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .card{background:white;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:2px;padding:12px 14px;margin-bottom:8px;box-shadow:1px 2px 0 var(--aged);animation:si .3s ease;position:relative}
 .zh{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:2px}
 .py{font-size:12px;color:var(--red);margin-top:2px}
@@ -46,37 +56,43 @@ header p{font-size:11px;color:#9a8a72;margin-top:2px}
 .empty{text-align:center;padding:40px 20px;color:var(--fade)}
 .empty .big{font-family:'Noto Serif TC',serif;font-size:48px;opacity:.3}
 .empty p{font-size:13px;margin-top:12px;line-height:1.8}
-.err{background:#fff0ee;border:1px solid #f5c6c0;border-radius:3px;padding:10px 14px;font-size:12px;color:var(--red);margin-top:10px;display:none}
-.err.show{display:block}
-.apirow{display:flex;gap:8px;margin-top:10px}
-.apirow input{flex:1;border:1.5px solid var(--line);border-radius:3px;padding:8px 12px;font-size:12px;font-family:inherit;background:var(--paper);color:var(--ink);outline:none}
-.apirow input:focus{border-color:var(--gold)}
-.apirow input::placeholder{color:#bbb}
-.apilabel{font-size:10px;color:var(--fade);margin-top:6px}
 </style>
 </head>
 <body>
 <header>
   <h1>中文 단어장</h1>
-  <p>매일 유튜브로 배우는 중국어</p>
+  <p>Claude Pro로 배우는 대만 중국어</p>
 </header>
-<div class="inp">
-  <label>유튜브 링크</label>
+
+<!-- STEP 1 -->
+<div class="box">
+  <label>① 유튜브 링크 입력</label>
   <div class="row">
     <input type="url" id="urlInput" placeholder="https://youtu.be/..."/>
-    <button class="btn" id="analyzeBtn" onclick="analyze()">분석</button>
+    <button class="btn" onclick="step1()">프롬프트 생성</button>
   </div>
-  <div class="err" id="err"></div>
-  <div class="apirow">
-    <input type="password" id="apiKey" placeholder="Anthropic API Key (sk-ant-...)"/>
-    <button class="btn" onclick="saveKey()">저장</button>
+  <div class="err" id="err1"></div>
+</div>
+
+<!-- STEP 2 -->
+<div class="box step2" id="step2">
+  <label>② Claude.ai에서 실행</label>
+  <p class="step-hint">아래 버튼으로 프롬프트를 복사한 뒤 Claude.ai에 붙여넣고 실행하세요.</p>
+  <div class="btn-row" style="margin-top:10px">
+    <button class="btn" onclick="copyPrompt()">프롬프트 복사</button>
+    <a class="claude-btn" href="https://claude.ai/new" target="_blank" rel="noopener">Claude.ai 열기 →</a>
   </div>
-  <p class="apilabel" id="keyStatus"></p>
+  <div class="ok" id="copied">프롬프트가 클립보드에 복사됐어요!</div>
+
+  <label style="margin-top:16px">③ Claude 응답 붙여넣기</label>
+  <textarea class="paste-area" id="jsonInput" placeholder="Claude가 반환한 JSON을 여기에 붙여넣으세요&#10;[ { &quot;chinese&quot;: ... }, ... ]"></textarea>
+  <div class="err" id="err2"></div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn" onclick="saveWords()">단어 저장</button>
+    <button class="btn outline" onclick="reset()">취소</button>
+  </div>
 </div>
-<div class="loading" id="loading">
-  <div class="dots"><span>●</span><span>●</span><span>●</span></div>
-  <p style="margin-top:10px;font-size:12px">AI가 단어를 추출하는 중...</p>
-</div>
+
 <div id="container"></div>
 <div class="spacer"></div>
 <div class="bar">
@@ -84,52 +100,86 @@ header p{font-size:11px;color:#9a8a72;margin-top:2px}
   <div class="pill" id="today">0<span>오늘</span></div>
   <button class="ebtn" onclick="exportPDF()">PDF 저장</button>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-const KEY='chinese_vocab_v1';
-const APIKEY_KEY='anthropic_api_key';
-function getApiKey(){return localStorage.getItem(APIKEY_KEY)||'';}
-function saveKey(){
-  const k=document.getElementById('apiKey').value.trim();
-  if(!k){return;}
-  localStorage.setItem(APIKEY_KEY,k);
-  document.getElementById('apiKey').value='';
-  showKeyStatus();
-}
-function showKeyStatus(){
-  const k=getApiKey();
-  const el=document.getElementById('keyStatus');
-  if(k){el.textContent='✓ API 키 저장됨 ('+k.substring(0,12)+'...)';}
-  else{el.textContent='API 키를 입력하세요';}
-}
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch{return{}}}
-function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+const STORE='chinese_vocab_v1';
+let currentUrl='';
+let currentPrompt='';
+
+function load(){try{return JSON.parse(localStorage.getItem(STORE))||{}}catch{return{}}}
+function save(d){localStorage.setItem(STORE,JSON.stringify(d))}
 function todayKey(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function vid(url){const m=url.match(/(?:youtu\.be\/|v=|\/v\/|embed\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null}
-async function analyze(){
+
+function step1(){
   const url=document.getElementById('urlInput').value.trim();
-  if(!url)return;
-  const apiKey=getApiKey();
-  const btn=document.getElementById('analyzeBtn');
-  const ld=document.getElementById('loading');
-  const er=document.getElementById('err');
-  if(!apiKey){er.textContent='API 키를 먼저 입력하고 저장해주세요';er.classList.add('show');return;}
-  btn.disabled=true;ld.classList.add('show');er.classList.remove('show');
-  try{
-    const id=vid(url);
-    const prompt=`다음 대만 유튜브 영상에서 중국어(번체자) 학습에 유용한 단어와 표현을 추출해주세요.\n영상 URL: ${url}\n${id?`영상 ID: ${id}`:''}\n\n이 채널은 대만 일상 중국어를 다루는 채널입니다.\n\nJSON 배열로만 응답하세요 (마크다운 코드블록 없이):\n[{"chinese":"繁體字","pinyin":"pīn yīn","korean":"한국어 뜻","example_zh":"예문","example_ko":"예문 번역"}]\n\n규칙: 일상 단어/표현 8~12개, 번체자, 대만식 표현 우선, JSON만 반환`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const text=data.content.map(b=>b.text||'').join('');
-    const words=JSON.parse(text.replace(/```json|```/g,'').trim());
-    if(!Array.isArray(words)||!words.length)throw new Error('단어 추출 실패');
-    const all=load();const t=todayKey();
-    if(!all[t])all[t]=[];
-    words.forEach(w=>all[t].push({...w,source:url,id:Date.now()+Math.random()}));
-    save(all);document.getElementById('urlInput').value='';render();
-  }catch(e){er.textContent='오류: '+e.message;er.classList.add('show');}
-  finally{btn.disabled=false;ld.classList.remove('show');}
+  const er=document.getElementById('err1');
+  if(!url){er.textContent='유튜브 링크를 입력해주세요';er.classList.add('show');return;}
+  if(!vid(url)){er.textContent='유효한 유튜브 링크가 아닙니다';er.classList.add('show');return;}
+  er.classList.remove('show');
+  currentUrl=url;
+  const id=vid(url);
+  currentPrompt=`다음 대만 유튜브 영상에서 중국어(번체자) 학습에 유용한 단어와 표현을 추출해주세요.
+영상 URL: ${url}
+영상 ID: ${id}
+
+이 채널은 대만 일상 중국어를 다루는 채널입니다.
+
+JSON 배열로만 응답하세요 (마크다운 코드블록 없이):
+[{"chinese":"繁體字","pinyin":"pīn yīn","korean":"한국어 뜻","example_zh":"예문","example_ko":"예문 번역"}]
+
+규칙: 일상 단어/표현 8~12개, 번체자, 대만식 표현 우선, JSON만 반환`;
+  document.getElementById('step2').classList.add('show');
+  document.getElementById('jsonInput').value='';
+  document.getElementById('err2').classList.remove('show');
+  document.getElementById('copied').classList.remove('show');
+  document.getElementById('step2').scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+async function copyPrompt(){
+  try{
+    await navigator.clipboard.writeText(currentPrompt);
+    document.getElementById('copied').classList.add('show');
+    setTimeout(()=>document.getElementById('copied').classList.remove('show'),2500);
+  }catch{
+    prompt('프롬프트를 복사하세요 (Ctrl+C):', currentPrompt);
+  }
+}
+
+function saveWords(){
+  const raw=document.getElementById('jsonInput').value.trim();
+  const er=document.getElementById('err2');
+  if(!raw){er.textContent='Claude 응답을 붙여넣어 주세요';er.classList.add('show');return;}
+  let words;
+  try{
+    words=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    if(!Array.isArray(words)||!words.length)throw new Error();
+  }catch{
+    er.textContent='JSON 형식이 올바르지 않아요. Claude 응답을 그대로 붙여넣으세요.';
+    er.classList.add('show');return;
+  }
+  const required=['chinese','pinyin','korean'];
+  if(!required.every(k=>k in words[0])){
+    er.textContent='필드가 부족합니다. Claude 응답을 다시 확인해주세요.';
+    er.classList.add('show');return;
+  }
+  er.classList.remove('show');
+  const all=load();const t=todayKey();
+  if(!all[t])all[t]=[];
+  words.forEach(w=>all[t].push({...w,source:currentUrl,id:Date.now()+Math.random()}));
+  save(all);
+  document.getElementById('urlInput').value='';
+  reset();
+  render();
+}
+
+function reset(){
+  document.getElementById('step2').classList.remove('show');
+  document.getElementById('err1').classList.remove('show');
+  currentUrl='';currentPrompt='';
+}
+
 function delWord(date,id){
   const all=load();
   if(!all[date])return;
@@ -137,13 +187,14 @@ function delWord(date,id){
   if(!all[date].length)delete all[date];
   save(all);render();
 }
+
 function render(){
   const all=load();
   const dates=Object.keys(all).sort((a,b)=>b.localeCompare(a));
   const c=document.getElementById('container');
   const t=todayKey();
   if(!dates.length){
-    c.innerHTML='<div class="empty"><div class="big">學</div><p>유튜브 링크를 붙여넣고<br>분석 버튼을 누르면<br>단어가 자동으로 저장돼요</p></div>';
+    c.innerHTML='<div class="empty"><div class="big">學</div><p>유튜브 링크를 붙여넣고<br>프롬프트를 생성해보세요</p></div>';
     document.getElementById('total').innerHTML='0<span>총 단어</span>';
     document.getElementById('today').innerHTML='0<span>오늘</span>';
     return;
@@ -153,7 +204,7 @@ function render(){
     const ws=all[date];tot+=ws.length;if(date===t)tod=ws.length;
     html+=`<div class="day"><div class="dh"><span class="dl">${date}</span><div class="dline"></div><span class="dc">${ws.length}개</span></div>`;
     ws.forEach(w=>{
-      const s=vid(w.source)?`youtu.be/${vid(w.source)}`:( w.source||'').substring(0,40);
+      const s=vid(w.source)?`youtu.be/${vid(w.source)}`:(w.source||'').substring(0,40);
       html+=`<div class="card"><button class="del" onclick="delWord('${date}','${w.id}')">✕</button><div class="zh">${w.chinese}</div><div class="py">${w.pinyin}</div><div class="ko">${w.korean}</div>${w.example_zh?`<div class="ex"><span style="font-family:serif">${w.example_zh}</span><br>${w.example_ko}</div>`:''}<div class="src">${s}</div></div>`;
     });
     html+='</div>';
@@ -162,6 +213,7 @@ function render(){
   document.getElementById('total').innerHTML=`${tot}<span>총 단어</span>`;
   document.getElementById('today').innerHTML=`${tod}<span>오늘</span>`;
 }
+
 async function exportPDF(){
   const all=load();const dates=Object.keys(all).sort((a,b)=>b.localeCompare(a));
   if(!dates.length){alert('저장된 단어가 없어요');return;}
@@ -191,9 +243,8 @@ async function exportPDF(){
   const pc=doc.getNumberOfPages();for(let i=1;i<=pc;i++){doc.setPage(i);doc.setTextColor(200,200,200);doc.setFontSize(8);doc.text(`${i}/${pc}`,195,290,{align:'right'});}
   doc.save(`중문단어장_${new Date().toLocaleDateString('ko-KR').replace(/\. /g,'-').replace('.','-')}.pdf`);
 }
-document.getElementById('urlInput').addEventListener('keydown',e=>{if(e.key==='Enter')analyze();});
-document.getElementById('apiKey').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
-showKeyStatus();
+
+document.getElementById('urlInput').addEventListener('keydown',e=>{if(e.key==='Enter')step1();});
 render();
 </script>
 </body>
